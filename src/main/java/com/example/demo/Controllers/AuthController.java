@@ -5,6 +5,7 @@ import com.example.demo.DTOs.AuthResponse;
 import com.example.demo.Exceptions.UserException;
 import com.example.demo.Services.JwtService;
 import com.example.demo.Services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,11 +22,13 @@ public class AuthController {
         this.userService = userService;
         this.jwtService = jwtService;
     }
+
     @PostMapping("/signUp")
     public ResponseEntity<AuthResponse> signUp(@RequestBody AuthReq req){
         userService.createUser(req.username(), req.password());
         return ResponseEntity.status(200).body(new AuthResponse("Account Created",""));
     }
+
     @PostMapping("/logIn")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthReq req){
         if(userService.verity(req.username(),req.password())){
@@ -34,6 +37,13 @@ public class AuthController {
         }else {
             throw new UserException("Authentication Failed");
         }
+    }
+
+    @GetMapping("api_key")
+    public ResponseEntity<AuthResponse> getKey(Authentication auth){
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String token = jwtService.generate(userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new AuthResponse("Authenticated",token));
     }
 
     @GetMapping("authTest")
