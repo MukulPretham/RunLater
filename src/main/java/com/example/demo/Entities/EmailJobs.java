@@ -3,14 +3,16 @@ package com.example.demo.Entities;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "email_jobs")
 public class EmailJobs {
-    @Id
-    private Long jobId;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "job_id")
-    private Jobs job;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;   // separate primary key
+
+    @ManyToOne
+    @JoinColumn(name = "job_id", nullable = false)
+    private Jobs job;  // foreign key reference
 
     @Column(nullable = false)
     private String fromEmail;
@@ -28,7 +30,10 @@ public class EmailJobs {
     @Column(nullable = false)
     private String contentType;
 
-    public EmailJobs( Jobs job, String fromEmail, String toEmail, String subject, String body, String contentType) {
+    public EmailJobs() {}
+
+    public EmailJobs(Jobs job, String fromEmail, String toEmail,
+                     String subject, String body, String contentType) {
         this.job = job;
         this.fromEmail = fromEmail;
         this.toEmail = toEmail;
@@ -37,8 +42,8 @@ public class EmailJobs {
         this.contentType = contentType;
     }
 
-    public Long getJobId() {
-        return jobId;
+    public Long getId() {
+        return id;
     }
 
     public Jobs getJob() {

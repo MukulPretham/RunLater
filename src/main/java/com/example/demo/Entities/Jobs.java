@@ -23,20 +23,31 @@ public class Jobs {
     private int retryCount;
 
     @Column
-    private Instant scheduledAtt;
+    private Instant scheduledAt;
+
+    public Jobs(){}
 
     public Jobs(Job type, JobStatus status, int retryCount) {
+        this.id = id;
         this.type = type;
         this.status = status;
         this.retryCount = retryCount;
+    }
+
+    public Jobs(Job type, JobStatus status, int retryCount, Instant scheduledAtt) {
+        this.id = id;
+        this.type = type;
+        this.status = status;
+        this.retryCount = retryCount;
+        this.scheduledAt = scheduledAtt;
     }
 
     @PrePersist
     void onCreate() {
         Instant now = Instant.now();
 
-        if (this.scheduledAtt == null) {
-            this.scheduledAtt = now;
+        if (this.scheduledAt == null) {
+            this.scheduledAt = now;
         }
     }
 
@@ -55,6 +66,6 @@ public class Jobs {
     }
 
     public Instant getScheduledAtt() {
-        return scheduledAtt;
+        return scheduledAt;
     }
 }
