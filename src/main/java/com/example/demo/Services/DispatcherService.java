@@ -3,6 +3,7 @@ package com.example.demo.Services;
 import com.example.demo.Entities.EmailJobs;
 import com.example.demo.Entities.JobStatus;
 import com.example.demo.Entities.Jobs;
+import com.example.demo.Exceptions.EmailException;
 import com.example.demo.Repository.EmailJobRepository;
 import com.example.demo.Repository.JobRepository;
 import jakarta.transaction.Transactional;
@@ -11,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -31,7 +33,10 @@ public class DispatcherService {
     @Scheduled(fixedRate = 5000)
     @Transactional
     public void dispatch(){
-        List<Jobs>jobs =  jobRepository.findReadyJobs(Instant.now(),JobStatus.SCHEDULED);
+        List<JobStatus> allowed = new ArrayList<>();
+        allowed.add(JobStatus.SCHEDULED);
+        allowed.add(JobStatus.RESCHEDULED);
+        List<Jobs>jobs =  jobRepository.findReadyJobs(Instant.now(),allowed);
         System.out.println(jobs);
         for(Jobs job : jobs){
             switch (job.getType()){
@@ -42,7 +47,7 @@ public class DispatcherService {
                         continue;
                     }
                     System.out.println(emailJobs.getToEmail());
-                    taskExecutor.execute(()->emailService.sendEmail(emailJobs));
+                    taskExecutor.execute(()-> emailService.sendEmail(emailJobs));
             }
         }
     }

@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 @Service
 public class EmailSchedulerService {
+
     JobRepository jobRepository;
     EmailJobRepository emailJobRepository;
 

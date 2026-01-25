@@ -2,6 +2,7 @@ package com.example.demo.Services;
 
 import com.example.demo.Entities.EmailJobs;
 import com.example.demo.Entities.JobStatus;
+import com.example.demo.Entities.Jobs;
 import com.example.demo.Repository.JobRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,13 @@ public class EmailService {
 
         } catch (Exception e) {
             logger.error("Failed to send email for jobId={}", job.getJob().getId(), e);
-            jobRepository.updateJobStatus(job.getJob().getId(), JobStatus.FAILED);
+            jobRepository.updateRetryCounts(job.getJob().getId());
+            Jobs updated = jobRepository.findById(job.getJob().getId()).orElse(null);
+            if(updated.getRetryCount() == 0){
+                jobRepository.updateJobStatus(job.getJob().getId(), JobStatus.FAILED);
+            }else {
+                jobRepository.updateJobStatus(job.getJob().getId(), JobStatus.RESCHEDULED);
+            }
         }
     }
 }

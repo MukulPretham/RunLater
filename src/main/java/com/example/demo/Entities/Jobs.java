@@ -7,6 +7,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "jobs")
 public class Jobs {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,7 +20,7 @@ public class Jobs {
     @Column(nullable = false)
     private JobStatus status;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private int retryCount;
 
     @Column
@@ -35,7 +36,6 @@ public class Jobs {
     }
 
     public Jobs(Job type, JobStatus status, int retryCount, Instant scheduledAtt) {
-        this.id = id;
         this.type = type;
         this.status = status;
         this.retryCount = retryCount;
@@ -67,5 +67,9 @@ public class Jobs {
 
     public Instant getScheduledAtt() {
         return scheduledAt;
+    }
+
+    public int getRetryCount() {
+        return retryCount;
     }
 }

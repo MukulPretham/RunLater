@@ -1,6 +1,7 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.DTOs.EmailJobReq;
+import com.example.demo.DTOs.ScheduleResponse;
 import com.example.demo.Entities.JobStatus;
 import com.example.demo.Services.EmailSchedulerService;
 import org.springframework.http.HttpStatus;
@@ -20,9 +21,9 @@ public class SchedulerController {
     }
 
     @PostMapping("/email")
-    public ResponseEntity<JobStatus> schedule(@RequestBody EmailJobReq req){
+    public ResponseEntity<ScheduleResponse> schedule(@RequestBody EmailJobReq req){
         emailSchedulerService.insertJob(req);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(JobStatus.SCHEDULED);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ScheduleResponse(JobStatus.SCHEDULED));
     }
 
 }

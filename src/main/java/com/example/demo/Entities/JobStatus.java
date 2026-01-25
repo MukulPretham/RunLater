@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 public enum JobStatus {
     RUNNING,
     SCHEDULED,
+    RESCHEDULED,
     COMPLETED,
     FAILED
 }

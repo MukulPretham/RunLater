@@ -8,11 +8,11 @@ public class EmailJobs {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;   // separate primary key
+    private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "job_id", nullable = false)
-    private Jobs job;  // foreign key reference
+    private Jobs job;
 
     @Column(nullable = false)
     private String fromEmail;

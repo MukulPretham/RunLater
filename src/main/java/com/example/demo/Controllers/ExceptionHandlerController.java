@@ -1,6 +1,7 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.DTOs.ErrorResponse;
+import com.example.demo.Exceptions.EmailException;
 import com.example.demo.Exceptions.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,4 +34,10 @@ public class ExceptionHandlerController {
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(new ErrorResponse("Database unavailable"));
     }
+
+    @ExceptionHandler(EmailException.class)
+    public void emailException(EmailException e){
+        logger.error(e.getMessage(),e);
+    }
+
 }
