@@ -1,4 +1,4 @@
-package com.example.demo.Services;
+package com.example.demo.Services.coreServices;
 
 import com.example.demo.Entities.EmailJobs;
 import com.example.demo.Entities.JobStatus;

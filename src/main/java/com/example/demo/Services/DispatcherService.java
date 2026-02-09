@@ -3,11 +3,10 @@ package com.example.demo.Services;
 import com.example.demo.Entities.EmailJobs;
 import com.example.demo.Entities.JobStatus;
 import com.example.demo.Entities.Jobs;
-import com.example.demo.Exceptions.EmailException;
 import com.example.demo.Repository.EmailJobRepository;
 import com.example.demo.Repository.JobRepository;
+import com.example.demo.Services.coreServices.EmailService;
 import jakarta.transaction.Transactional;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +47,8 @@ public class DispatcherService {
                     }
                     System.out.println(emailJobs.getToEmail());
                     taskExecutor.execute(()-> emailService.sendEmail(emailJobs));
+                case WEBHOOK:
+
             }
         }
     }
