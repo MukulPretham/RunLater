@@ -16,8 +16,7 @@ public class WebhookJobs {
     @Column(nullable = false, length = 2048)
     private String targetUrl;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String payload;
 
     @Column(nullable = false)
