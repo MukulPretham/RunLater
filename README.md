@@ -29,7 +29,7 @@ docker compose up -d
 
 The API starts at `http://localhost:8080`; MailHog is available at `http://localhost:8025`.
 
-Copy `.env.example` if you need to set environment variables for another PostgreSQL or SMTP provider. Never commit secrets. The existing local `application.properties` file is intentionally ignored.
+Copy `.env.example` if you need to set environment variables for another PostgreSQL or SMTP provider. Never commit secrets. The previous local configuration, if present, is retained as the ignored `application.properties.bak` backup so it cannot override the environment-based v2 settings.
 
 ## API overview
 
