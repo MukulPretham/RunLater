@@ -40,7 +40,7 @@ public class EmailService {
             jobRepository.updateJobStatus(job.getJob().getId(), JobStatus.COMPLETED);
             logger.info("Email sent successfully for jobId={}", job.getJob().getId());
 
-        } catch (Exception e) {
+        }catch (Exception e) {
             logger.error("Failed to send email for jobId={}", job.getJob().getId(), e);
             jobRepository.updateRetryCounts(job.getJob().getId());
             Jobs updated = jobRepository.findById(job.getJob().getId()).orElse(null);
