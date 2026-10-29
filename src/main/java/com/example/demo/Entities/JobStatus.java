@@ -3,9 +3,10 @@ package com.example.demo.Entities;
 import jakarta.persistence.Entity;
 
 public enum JobStatus {
-    RUNNING,
+    PROCESSING,
     SCHEDULED,
-    RESCHEDULED,
+    RETRYING,
     COMPLETED,
-    FAILED
+    FAILED,
+    CANCELLED
 }

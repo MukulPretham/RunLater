@@ -1,17 +1,14 @@
 package com.example.demo.DTOs;
 
-import com.example.demo.Entities.Job;
-
 import java.time.Instant;
+import jakarta.validation.constraints.*;
 
 public record EmailJobReq(
-        Job type,
-        int retryCount,
+        @Min(1) @Max(10) int maxAttempts,
         Instant scheduledAt,
-
-        String from,
-        String [] to,
-        String subject,
-        String body,
-        String contentType
+        @Email String from,
+        @NotEmpty String[] to,
+        @NotBlank @Size(max = 255) String subject,
+        @NotBlank String body,
+        @NotBlank @Pattern(regexp = "text/plain|text/html") String contentType
 ) {}

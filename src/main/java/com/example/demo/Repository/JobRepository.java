@@ -3,35 +3,30 @@ package com.example.demo.Repository;
 import com.example.demo.Entities.Job;
 import com.example.demo.Entities.JobStatus;
 import com.example.demo.Entities.Jobs;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface JobRepository extends JpaRepository<Jobs,Long> {
-    Jobs findByType(Job job);
+    Optional<Jobs> findByPublicIdAndUserUsername(UUID publicId, String username);
+    List<Jobs> findAllByIdempotencyKeyAndUserUsername(String idempotencyKey, String username);
+    Optional<Jobs> findFirstByIdempotencyKeyAndUserUsername(String idempotencyKey, String username);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
 SELECT j FROM Jobs j
 WHERE j.status IN :statuses
-AND (j.scheduledAt <= :now OR j.scheduledAt IS NULL)
-AND j.retryCount > 0
+AND j.nextAttemptAt <= :now
+ORDER BY j.nextAttemptAt ASC
 """)
     List<Jobs> findReadyJobs(@Param("now") Instant now,
                              @Param("statuses") List<JobStatus> statuses);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE Jobs j SET j.status = :status WHERE j.id = :id")
-    int updateJobStatus(@Param("id") Long id,
-                        @Param("status") JobStatus status);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE Jobs j SET j.retryCount = j.retryCount-1 WHERE j.id = :id")
-    int updateRetryCounts(@Param("id") Long id);
 }

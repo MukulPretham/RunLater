@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 @RestController
 public class AuthController {
@@ -24,13 +25,13 @@ public class AuthController {
     }
 
     @PostMapping("/signUp")
-    public ResponseEntity<AuthResponse> signUp(@RequestBody AuthReq req){
+    public ResponseEntity<AuthResponse> signUp(@Valid @RequestBody AuthReq req){
         userService.createUser(req.username(), req.password());
         return ResponseEntity.status(200).body(new AuthResponse("Account Created",""));
     }
 
     @PostMapping("/logIn")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthReq req){
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthReq req){
         if(userService.verity(req.username(),req.password())){
             String token = jwtService.generate(req.username());
             return ResponseEntity.status(200).body(new AuthResponse("Authenticated",token));

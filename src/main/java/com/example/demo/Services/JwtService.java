@@ -3,9 +3,8 @@ package com.example.demo.Services;
 import com.example.demo.Exceptions.UserException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +17,13 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    private static final Key SECRET_KEY =
-            Keys.hmacShaKeyFor("my-super-secret-key-my-super-secret-key".getBytes());
+    private final Key secretKey;
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60;
+
+    public JwtService(@Value("${app.security.jwt-secret}") String secret) {
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     public String generate(String username){
         HashMap<String,Object> claims = new HashMap<>();
@@ -32,7 +34,7 @@ public class JwtService {
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .and()
-                .signWith(SECRET_KEY)
+                .signWith(secretKey)
                 .compact();
     }
 
@@ -52,7 +54,7 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         try {
             return Jwts.parser()
-                    .verifyWith((SecretKey) SECRET_KEY)
+                    .verifyWith((SecretKey) secretKey)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();

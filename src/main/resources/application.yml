@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: runlater
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/runlater}
+    username: ${DATABASE_USERNAME:runlater}
+    password: ${DATABASE_PASSWORD:runlater}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    properties:
+      mail.smtp.auth: ${MAIL_SMTP_AUTH:false}
+      mail.smtp.starttls.enable: ${MAIL_STARTTLS:false}
+  flyway:
+    enabled: true
+
+app:
+  dispatcher:
+    poll-interval-ms: ${DISPATCHER_POLL_INTERVAL_MS:5000}
+  security:
+    jwt-secret: ${JWT_SECRET:change-this-development-secret-to-a-32-byte-minimum-value}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

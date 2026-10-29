@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 @RestControllerAdvice
 public class ExceptionHandlerController {
@@ -36,8 +38,14 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(EmailException.class)
-    public void emailException(EmailException e){
+    public ResponseEntity<ErrorResponse> emailException(EmailException e){
         logger.error(e.getMessage(),e);
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+    public ResponseEntity<ErrorResponse> badRequest(Exception ex) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage() == null ? "Invalid request" : ex.getMessage()));
     }
 
 }
